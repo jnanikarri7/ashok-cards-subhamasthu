@@ -15,19 +15,11 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
 
-  // Prevent micromatch stack overflow during Vercel build trace collection
-  outputFileTracingExcludes: {
-    '*': [
-      'node_modules/@swc/core-linux-x64-gnu',
-      'node_modules/@swc/core-linux-x64-musl',
-      'node_modules/@esbuild/linux-x64',
-      'node_modules/sharp/vendor',
-      'node_modules/prisma/libquery_engine*',
-      'node_modules/@prisma/engines',
-      'node_modules/razorpay',
-      'node_modules/nodemailer',
-    ],
+  // Disable output file tracing to prevent micromatch stack overflow on Vercel
+  experimental: {
+    outputFileTracingRoot: undefined,
   },
+  outputFileTracing: false,
 
   async headers() {
     return [

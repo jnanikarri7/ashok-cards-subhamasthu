@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { jwtVerify } from 'jose'
 
+export const runtime = 'nodejs'
+
 export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname
 
@@ -24,6 +26,4 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: ['/admin/:path*'],
-  // Force Node.js runtime to avoid jose edge runtime issues
-  runtime: 'nodejs',
 }

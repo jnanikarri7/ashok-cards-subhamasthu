@@ -1,3 +1,4 @@
+export const runtime = 'nodejs'
 import { NextRequest, NextResponse } from 'next/server'
 import { sendContactNotification } from '@/lib/email'
 import { contactSchema } from '@/lib/validations/contact.schema'

@@ -1,8 +1,10 @@
-export const runtime = 'nodejs'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { sendStatusUpdateEmail } from '@/lib/email'
 import { ORDER_STATUS_LABELS } from '@/lib/utils'
+
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   try {

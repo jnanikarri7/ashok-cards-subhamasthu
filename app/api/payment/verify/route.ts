@@ -1,9 +1,11 @@
-export const runtime = 'nodejs'
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
 import { prisma } from '@/lib/prisma'
 import { rateLimit, getClientIp } from '@/lib/rateLimit'
 import { z } from 'zod'
+
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 const verifySchema = z.object({
   razorpay_order_id: z.string().min(1),

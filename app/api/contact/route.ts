@@ -1,8 +1,10 @@
-export const runtime = 'nodejs'
 import { NextRequest, NextResponse } from 'next/server'
 import { sendContactNotification } from '@/lib/email'
 import { contactSchema } from '@/lib/validations/contact.schema'
 import { rateLimit, getClientIp } from '@/lib/rateLimit'
+
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req)

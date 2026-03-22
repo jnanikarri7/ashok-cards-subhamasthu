@@ -1,9 +1,11 @@
-export const runtime = 'nodejs'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { createOrderSchema } from '@/lib/validations/order.schema'
 import { createOrder } from '@/lib/services/order.service'
 import { rateLimit, getClientIp } from '@/lib/rateLimit'
+
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)

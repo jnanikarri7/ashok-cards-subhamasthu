@@ -26,22 +26,22 @@ export async function sendOrderConfirmationEmail(order: {
   `).join('')
 
   await transporter.sendMail({
-    from: '"Ashok Cards Subhamasthu" <info@ashokcards.com>',
+    from: '"Ashok 9 Cards Subhamasthu" <info@ashok9cards.com>',
     to: order.email,
-    subject: `Order Confirmed — #${order.orderNumber} | Ashok Cards Subhamasthu`,
+    subject: `Order Confirmed — #${order.orderNumber} | Ashok 9 Cards Subhamasthu`,
     html: `
     <!DOCTYPE html>
     <html>
     <body style="font-family:'Noto Serif',serif;background:#EFE6D2;padding:20px;margin:0;">
       <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,0.1);">
         <div style="background:linear-gradient(135deg,#800000,#6b0000);padding:30px;text-align:center;">
-          <h1 style="color:#D4AF37;font-family:Playfair Display,serif;margin:0;font-size:28px;">Ashok Cards</h1>
+          <h1 style="color:#D4AF37;font-family:Playfair Display,serif;margin:0;font-size:28px;">Ashok 9 Cards</h1>
           <p style="color:#EFE6D2;margin:5px 0 0;">Subhamasthu</p>
         </div>
         <div style="padding:30px;">
           <h2 style="color:#800000;font-family:Playfair Display,serif;">Order Confirmed! 🎊</h2>
           <p>Dear ${order.customerName},</p>
-          <p>Thank you for choosing <strong>Ashok Cards Subhamasthu</strong> for your special occasion. Your order has been received and is being reviewed by our team.</p>
+          <p>Thank you for choosing <strong>Ashok 9 Cards Subhamasthu</strong> for your special occasion. Your order has been received and is being reviewed by our team.</p>
           <div style="background:#EFE6D2;padding:15px;border-radius:6px;margin:20px 0;">
             <strong>Order Number: #${order.orderNumber}</strong>
           </div>
@@ -71,8 +71,8 @@ export async function sendOrderConfirmationEmail(order: {
           <p>📞 <strong>+91-XXXXXXXXXX</strong> | 📧 <strong>info@ashokcards.com</strong></p>
         </div>
         <div style="background:#800000;padding:20px;text-align:center;color:#EFE6D2;">
-          <p style="margin:0;">Ashok Cards Subhamasthu | #3-3-832, Bazar Road, Secunderabad, Telangana 500003</p>
-          <p style="margin:5px 0 0;color:#D4AF37;">Traditional South Indian Wedding Invitations — Crafted with Elegance.</p>
+          <p style="margin:0;">Ashok 9 Cards Subhamasthu | #3-3-832, Bazar Road, Secunderabad, Telangana 500003</p>
+          <p style="margin:5px 0 0;color:#D4AF37;">Premium Traditional South Indian Wedding Invitations — Crafted with Devotion.</p>
         </div>
       </div>
     </body>
@@ -89,13 +89,13 @@ export async function sendStatusUpdateEmail(order: {
   statusLabel: string
 }) {
   await transporter.sendMail({
-    from: '"Ashok Cards Subhamasthu" <info@ashokcards.com>',
+    from: '"Ashok 9 Cards Subhamasthu" <info@ashok9cards.com>',
     to: order.email,
     subject: `Order Update: ${order.statusLabel} — #${order.orderNumber}`,
     html: `
     <div style="font-family:'Noto Serif',serif;max-width:600px;margin:0 auto;padding:20px;">
       <div style="background:linear-gradient(135deg,#800000,#6b0000);padding:20px;text-align:center;border-radius:8px 8px 0 0;">
-        <h1 style="color:#D4AF37;margin:0;">Ashok Cards Subhamasthu</h1>
+        <h1 style="color:#D4AF37;margin:0;">Ashok 9 Cards Subhamasthu</h1>
       </div>
       <div style="background:#fff;padding:25px;border:1px solid #eee;">
         <h2>Order Status Update</h2>
@@ -105,6 +105,36 @@ export async function sendStatusUpdateEmail(order: {
           ${order.statusLabel}
         </div>
         <p style="margin-top:20px;">If you have questions, reply to this email or WhatsApp us at +91-XXXXXXXXXX.</p>
+      </div>
+    </div>
+    `,
+  })
+}
+
+export async function sendContactNotification(data: {
+  name: string
+  email: string
+  phone?: string
+  subject: string
+  message: string
+}) {
+  await transporter.sendMail({
+    from: '"Ashok 9 Cards Website" <info@ashok9cards.com>',
+    to: process.env.SMTP_USER,
+    replyTo: data.email,
+    subject: `[Contact Form] ${data.subject}`,
+    html: `
+    <div style="font-family:'Noto Serif',serif;max-width:600px;margin:0 auto;padding:20px;">
+      <h2 style="color:#800000;">New Contact Form Submission</h2>
+      <table style="width:100%;border-collapse:collapse;">
+        <tr><td style="padding:8px;font-weight:bold;color:#800000;">Name:</td><td style="padding:8px;">${data.name}</td></tr>
+        <tr><td style="padding:8px;font-weight:bold;color:#800000;">Email:</td><td style="padding:8px;">${data.email}</td></tr>
+        <tr><td style="padding:8px;font-weight:bold;color:#800000;">Phone:</td><td style="padding:8px;">${data.phone ?? '—'}</td></tr>
+        <tr><td style="padding:8px;font-weight:bold;color:#800000;">Subject:</td><td style="padding:8px;">${data.subject}</td></tr>
+      </table>
+      <div style="margin-top:16px;padding:16px;background:#EFE6D2;border-radius:6px;">
+        <strong style="color:#800000;">Message:</strong>
+        <p style="margin-top:8px;">${data.message.replace(/\n/g, '<br>')}</p>
       </div>
     </div>
     `,

@@ -38,6 +38,7 @@ module.exports = {
         playfair: ['Playfair Display', 'serif'],
         noto: ['Noto Serif', 'serif'],
         cinzel: ['Cinzel', 'serif'],
+        inter: ['Inter', 'sans-serif'],
       },
       backgroundImage: {
         'hero-pattern': "url('/images/hero-bg.jpg')",

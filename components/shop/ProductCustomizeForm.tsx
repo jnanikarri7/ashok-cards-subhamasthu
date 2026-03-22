@@ -76,10 +76,10 @@ export default function ProductCustomizeForm({ product }: { product: Product }) 
     try {
       addItem({
         productId: product.id,
-        productName: product.name,
-        productImage: product.images[0] || '',
+        name: product.name,
         price: pricePerCard,
         quantity: form.quantity,
+        image: product.images[0] || '',
         customization: {
           brideName: form.brideName,
           groomName: form.groomName,

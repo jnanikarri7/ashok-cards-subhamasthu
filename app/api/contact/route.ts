@@ -1,24 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { sendContactNotification } from '@/lib/email'
+import { contactSchema } from '@/lib/validations/contact.schema'
+import { rateLimit, getClientIp } from '@/lib/rateLimit'
 
 export async function POST(req: NextRequest) {
-  const body = await req.json()
-  const { name, email, phone, subject, message } = body
-
-  if (!name || !email || !subject || !message) {
-    return NextResponse.json({ error: 'All fields required' }, { status: 400 })
+  const ip = getClientIp(req)
+  const { allowed } = rateLimit(`contact:${ip}`, 3, 60_000)
+  if (!allowed) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
   }
 
-  await prisma.contactMessage.create({
-    data: { name, email, phone, subject, message },
-  })
+  let body: unknown
+  try {
+    body = await req.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
+  }
+
+  const parsed = contactSchema.safeParse(body)
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'Validation failed', details: parsed.error.flatten() },
+      { status: 400 }
+    )
+  }
 
   try {
-    await sendContactNotification({ name, email, phone, subject, message })
-  } catch (e) {
-    console.error('Contact email failed:', e)
+    await sendContactNotification(parsed.data)
+    return NextResponse.json({ success: true })
+  } catch (err) {
+    console.error('[Contact] Email failed:', err)
+    // Still return success to user — don't expose email errors
+    return NextResponse.json({ success: true })
   }
-
-  return NextResponse.json({ success: true })
 }

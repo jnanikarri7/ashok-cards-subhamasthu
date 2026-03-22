@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { generateOrderNumber } from '@/lib/utils'
-import { sendOrderConfirmationEmail } from '@/lib/email'
+import { createOrderSchema } from '@/lib/validations/order.schema'
+import { createOrder } from '@/lib/services/order.service'
+import { rateLimit, getClientIp } from '@/lib/rateLimit'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -14,63 +15,51 @@ export async function GET(req: NextRequest) {
   if (status) where.status = status
 
   const [orders, total] = await Promise.all([
-    prisma.order.findMany({ where, include: { items: { include: { product: true } } }, skip, take: limit, orderBy: { createdAt: 'desc' } }),
+    prisma.order.findMany({
+      where,
+      include: { items: { include: { product: true } } },
+      skip,
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+    }),
     prisma.order.count({ where }),
   ])
+
   return NextResponse.json({ orders, total, pages: Math.ceil(total / limit) })
 }
 
 export async function POST(req: NextRequest) {
+  // Rate limit: 5 orders per minute per IP
+  const ip = getClientIp(req)
+  const { allowed } = rateLimit(`order:${ip}`, 5, 60_000)
+  if (!allowed) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please wait a moment.' },
+      { status: 429 }
+    )
+  }
+
+  let body: unknown
   try {
-    const body = await req.json()
-    const orderNumber = generateOrderNumber()
-    const subtotal = body.items.reduce((sum: number, item: { quantity: number; pricePerCard: number }) => sum + item.quantity * item.pricePerCard, 0)
-    const shipping = subtotal > 5000 ? 0 : 149
-    const tax = subtotal * 0.05
-    const total = subtotal + shipping + tax
+    body = await req.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
+  }
 
-    const order = await prisma.order.create({
-      data: {
-        orderNumber,
-        guestEmail: body.email,
-        guestPhone: body.phone,
-        guestName: body.name,
-        subtotal,
-        shipping,
-        tax,
-        total,
-        shippingAddress: body.shippingAddress || {},
-        customization: body.customization || {},
-        notes: body.notes,
-        items: {
-          create: body.items.map((item: { productId: string; quantity: number; pricePerCard: number; customization?: unknown }) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            pricePerCard: item.pricePerCard,
-            totalPrice: item.quantity * item.pricePerCard,
-            customization: item.customization || {},
-          })),
-        },
-      },
-      include: { items: { include: { product: true } } },
-    })
+  const parsed = createOrderSchema.safeParse(body)
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'Validation failed', details: parsed.error.flatten() },
+      { status: 400 }
+    )
+  }
 
-    // Send confirmation email
-    try {
-      await sendOrderConfirmationEmail({
-        orderNumber: order.orderNumber,
-        customerName: body.name || 'Valued Customer',
-        email: body.email,
-        total: order.total,
-        items: order.items.map(i => ({ name: i.product.name, quantity: i.quantity, price: i.totalPrice })),
-      })
-    } catch (emailErr) {
-      console.error('Email send failed:', emailErr)
-    }
-
+  try {
+    const order = await createOrder(parsed.data)
     return NextResponse.json(order)
-  } catch (error) {
-    console.error(error)
-    return NextResponse.json({ error: 'Failed to create order' }, { status: 500 })
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Failed to create order'
+    console.error('[Orders POST]', err)
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }

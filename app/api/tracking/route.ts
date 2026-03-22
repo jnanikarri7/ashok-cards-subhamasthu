@@ -14,17 +14,13 @@ export async function GET(req: NextRequest) {
     select: {
       id: true,
       orderNumber: true,
-      customerName: true,
+      guestName: true,
       status: true,
       paymentStatus: true,
       total: true,
-      trackingNumber: true,
-      proofSentAt: true,
-      proofApprovedAt: true,
-      printingAt: true,
-      shippedAt: true,
-      deliveredAt: true,
+      estimatedDays: true,
       createdAt: true,
+      updatedAt: true,
       items: {
         select: {
           quantity: true,

@@ -24,7 +24,6 @@ export default function CustomizationForm({ product }: { product: Product }) {
       return
     }
     addItem({
-      id: product.id,
       productId: product.id,
       name: product.name,
       price: product.price * qty,

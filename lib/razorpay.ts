@@ -1,19 +1,20 @@
 import Razorpay from 'razorpay'
 import crypto from 'crypto'
 
-export const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || '',
-  key_secret: process.env.RAZORPAY_KEY_SECRET || '',
-})
+// Lazy getter — avoids build-time crash when env vars aren't set
+function getRazorpay() {
+  return new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID || '',
+    key_secret: process.env.RAZORPAY_KEY_SECRET || '',
+  })
+}
 
 export async function createRazorpayOrder(amount: number, orderId: string) {
-  const order = await razorpay.orders.create({
-    amount: Math.round(amount * 100), // amount in paise
+  const order = await getRazorpay().orders.create({
+    amount: Math.round(amount * 100),
     currency: 'INR',
     receipt: orderId,
-    notes: {
-      source: 'ashok-cards-website',
-    },
+    notes: { source: 'ashok-cards-website' },
   })
   return order
 }

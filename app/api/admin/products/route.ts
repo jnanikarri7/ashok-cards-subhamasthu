@@ -1,28 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth'
-
-export async function POST(req: NextRequest) {
-  const admin = requireAdmin(req)
-  if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const body = await req.json()
-  const { name, description, price, minPrice, maxPrice, categoryId, images, motifs, languages, paperType, size, finish, minQty, maxQty, tags, featured } = body
-
-  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')
-
-  const product = await prisma.product.create({
-    data: {
-      name, slug, description, price, minPrice, maxPrice,
-      categoryId, images: images || [], motifs: motifs || [],
-      languages: languages || [], paperType, size, finish: finish || [],
-      minQty: minQty || 50, maxQty: maxQty || 5000, tags: tags || [], featured: featured || false,
-    },
-    include: { category: true },
-  })
-
-  return NextResponse.json({ product }, { status: 201 })
-}
+import { createProductSchema } from '@/lib/validations/product.schema'
+import { slugify } from '@/lib/utils'
 
 export async function GET(req: NextRequest) {
   const admin = requireAdmin(req)
@@ -34,4 +14,40 @@ export async function GET(req: NextRequest) {
   })
 
   return NextResponse.json({ products })
+}
+
+export async function POST(req: NextRequest) {
+  const admin = requireAdmin(req)
+  if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  let body: unknown
+  try {
+    body = await req.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+  }
+
+  // Auto-generate slug if not provided
+  if (body && typeof body === 'object' && !('slug' in body)) {
+    (body as Record<string, unknown>).slug = slugify((body as Record<string, unknown>).name as string ?? '')
+  }
+
+  const parsed = createProductSchema.safeParse(body)
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'Validation failed', details: parsed.error.flatten() },
+      { status: 400 }
+    )
+  }
+
+  try {
+    const product = await prisma.product.create({
+      data: parsed.data,
+      include: { category: true },
+    })
+    return NextResponse.json({ product }, { status: 201 })
+  } catch (err) {
+    console.error('[Admin products POST]', err)
+    return NextResponse.json({ error: 'Failed to create product' }, { status: 500 })
+  }
 }

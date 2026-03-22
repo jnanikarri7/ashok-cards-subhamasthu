@@ -1,6 +1,6 @@
 export default function WhatsAppButton() {
   const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace('+', '') || '91XXXXXXXXXX'
-  const message = encodeURIComponent('Namaskaram! I\'m interested in ordering wedding invitation cards from Ashok Cards Subhamasthu.')
+  const message = encodeURIComponent("Namaskaram! I'm interested in ordering wedding invitation cards from Ashok 9 Cards Subhamasthu.")
   const url = `https://wa.me/${number}?text=${message}`
   return (
     <a href={url} target="_blank" rel="noopener noreferrer" className="whatsapp-btn" aria-label="Chat on WhatsApp">

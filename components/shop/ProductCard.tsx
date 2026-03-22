@@ -25,7 +25,6 @@ export default function ProductCard({ product }: { product: Product }) {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
     addItem({
-      id: product.id,
       productId: product.id,
       name: product.name,
       price: product.price * product.minQuantity,

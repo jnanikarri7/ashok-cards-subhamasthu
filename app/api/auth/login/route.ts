@@ -1,38 +1,54 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { comparePassword, signToken } from '@/lib/auth'
+import { z } from 'zod'
+
+const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+})
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, password } = await req.json()
-
-    if (!email || !password) {
-      return NextResponse.json({ error: 'Email and password required' }, { status: 400 })
+    let body: unknown
+    try {
+      body = await req.json()
+    } catch {
+      return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
     }
 
-    const user = await prisma.user.findUnique({ where: { email } })
+    const parsed = loginSchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Invalid credentials' }, { status: 400 })
+    }
 
-    if (!user || !(await comparePassword(password, user.password))) {
+    const { email, password } = parsed.data
+
+    // Customer model (not User)
+    const customer = await prisma.customer.findUnique({ where: { email } })
+
+    if (!customer || !(await comparePassword(password, customer.password))) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
     }
 
-    const token = signToken({ userId: user.id, email: user.email, role: user.role })
+    const token = signToken({ userId: customer.id, email: customer.email, role: 'CUSTOMER' })
 
     const response = NextResponse.json({
       success: true,
-      user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      user: { id: customer.id, name: customer.name, email: customer.email },
     })
 
     response.cookies.set('auth_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 7,
       path: '/',
     })
 
     return response
   } catch (error) {
+    console.error('[Auth login]', error)
     return NextResponse.json({ error: 'Login failed' }, { status: 500 })
   }
 }

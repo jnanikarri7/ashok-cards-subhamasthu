@@ -1,70 +1,110 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import MainLayout from '@/components/layout/MainLayout'
 import { MapPin, Phone, Mail, Clock } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Contact Us',
-  description: 'Contact Ashok Cards Subhamasthu for wedding invitation queries. Visit our Secunderabad store or reach us via phone, email, or WhatsApp.',
+  title: 'Contact Us | Ashok 9 Cards Subhamasthu',
+  description: 'Contact Ashok 9 Cards Subhamasthu for wedding invitation queries. Visit our Secunderabad store or reach us via phone, email, or WhatsApp.',
 }
+
+const INFO_CARDS = [
+  { icon: MapPin, label: 'VISIT US', content: '#3-3-832, Bazar Road, near Dargah,\nGeneral Bazaar, Secunderabad,\nTelangana 500003' },
+  { icon: Phone, label: 'PHONE & WHATSAPP', content: '+91-XXXXXXXXXX' },
+  { icon: Mail, label: 'EMAIL', content: 'info@ashok9cards.com' },
+  { icon: Clock, label: 'BUSINESS HOURS', content: 'Monday to Saturday: 9 AM to 8 PM\nSunday: 10 AM to 5 PM' },
+]
 
 export default function ContactPage() {
   return (
     <MainLayout>
-      <div className="py-12 text-center" style={{background:'linear-gradient(135deg,#800000,#4a0000)'}}>
-        <h1 className="font-playfair text-4xl font-bold" style={{color:'#EFE6D2'}}>Contact Us</h1>
-        <p className="font-noto text-sm mt-2" style={{color:'#D4AF37'}}>We're here to help craft your perfect invitation</p>
+      {/* Header */}
+      <div style={{ background: '#ffffff', borderBottom: '1px solid #f0f0f0', padding: '64px 24px', textAlign: 'center' }}>
+        <p className="font-cinzel" style={{ fontSize: '11px', letterSpacing: '0.2em', color: '#800000', marginBottom: '16px' }}>
+          ASHOK 9 CARDS SUBHAMASTHU
+        </p>
+        <h1 className="font-playfair" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 700, color: '#1a1a1a', marginBottom: '16px', lineHeight: 1.2 }}>
+          Get in Touch
+        </h1>
+        <p className="font-noto" style={{ fontSize: '1rem', color: '#6b6b6b', maxWidth: '420px', margin: '0 auto', lineHeight: 1.7 }}>
+          We&apos;re here to help craft your perfect invitation. Reach out and we&apos;ll respond within one business day.
+        </p>
       </div>
-      <div className="max-w-5xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10">
-        <div>
-          <h2 className="font-playfair text-2xl font-bold mb-6" style={{color:'#800000'}}>Get In Touch</h2>
-          <div className="space-y-4">
-            {[
-              { icon: MapPin, title: 'Our Store', content: '#3-3-832, Bazar Road, near Dargah,\nGeneral Bazaar, Secunderabad,\nTelangana 500003' },
-              { icon: Phone, title: 'Phone & WhatsApp', content: '+91-XXXXXXXXXX' },
-              { icon: Mail, title: 'Email', content: 'info@ashokcards.com' },
-              { icon: Clock, title: 'Business Hours', content: 'Monday – Saturday: 9 AM – 8 PM\nSunday: 10 AM – 5 PM' },
-            ].map(({ icon: Icon, title, content }) => (
-              <div key={title} className="flex gap-4 p-4 rounded-lg bg-white border" style={{borderColor:'rgba(212,175,55,0.3)'}}>
-                <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{background:'#800000'}}>
-                  <Icon size={18} color="#D4AF37" />
-                </div>
-                <div>
-                  <p className="font-cinzel text-xs tracking-wide mb-1" style={{color:'#D4AF37'}}>{title}</p>
-                  <p className="font-noto text-sm whitespace-pre-line" style={{color:'#444'}}>{content}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Enquiry Form */}
-        <div>
-          <h2 className="font-playfair text-2xl font-bold mb-6" style={{color:'#800000'}}>Send an Enquiry</h2>
-          <form className="bg-white p-6 rounded-lg border space-y-4" style={{borderColor:'rgba(212,175,55,0.3)'}}>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block font-noto text-xs mb-1" style={{color:'#800000'}}>Your Name</label>
-                <input className="input-field" placeholder="Sri Ramesh Kumar" />
+      {/* Body */}
+      <div style={{ background: '#fafaf9', minHeight: '100vh', padding: '64px 24px' }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
+
+            {/* LEFT */}
+            <div className="lg:col-span-2">
+              <h2 className="font-playfair" style={{ fontSize: '1.25rem', fontWeight: 600, color: '#1a1a1a', marginBottom: '24px' }}>
+                Contact Information
+              </h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {INFO_CARDS.map(({ icon: Icon, label, content }) => (
+                  <div key={label} className="contact-info-card">
+                    <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'rgba(128,0,0,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <Icon size={16} color="#800000" />
+                    </div>
+                    <div>
+                      <p className="font-cinzel" style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.15em', color: '#6b6b6b', marginBottom: '6px' }}>
+                        {label}
+                      </p>
+                      <p className="font-noto" style={{ fontSize: '0.875rem', color: '#1a1a1a', lineHeight: 1.7, whiteSpace: 'pre-line' }}>
+                        {content}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div>
-                <label className="block font-noto text-xs mb-1" style={{color:'#800000'}}>Phone</label>
-                <input className="input-field" placeholder="+91 XXXXX XXXXX" />
+              <div style={{ marginTop: '24px', paddingTop: '24px', borderTop: '1px solid #f0f0f0' }}>
+                <p className="font-noto" style={{ fontSize: '0.75rem', color: '#6b6b6b', lineHeight: 1.7 }}>
+                  Prefer a quick chat? Message us on WhatsApp — our design team typically responds within a few hours.
+                </p>
               </div>
             </div>
-            <div>
-              <label className="block font-noto text-xs mb-1" style={{color:'#800000'}}>Email</label>
-              <input className="input-field" placeholder="your@email.com" type="email" />
+
+            {/* Divider */}
+            <div className="hidden lg:flex justify-center">
+              <div style={{ width: '1px', background: '#efefef', height: '100%' }} />
             </div>
-            <div>
-              <label className="block font-noto text-xs mb-1" style={{color:'#800000'}}>Wedding Date</label>
-              <input className="input-field" type="date" />
+
+            {/* RIGHT */}
+            <div className="lg:col-span-2">
+              <h2 className="font-playfair" style={{ fontSize: '1.25rem', fontWeight: 600, color: '#1a1a1a', marginBottom: '24px' }}>
+                Send an Enquiry
+              </h2>
+              <form style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div className="grid grid-cols-2 gap-4">
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <label className="font-cinzel" style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.15em', color: '#6b6b6b' }}>YOUR NAME</label>
+                    <input type="text" placeholder="Sri Ramesh Kumar" className="contact-input" />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <label className="font-cinzel" style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.15em', color: '#6b6b6b' }}>PHONE</label>
+                    <input type="tel" placeholder="+91 XXXXX XXXXX" className="contact-input" />
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <label className="font-cinzel" style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.15em', color: '#6b6b6b' }}>EMAIL ADDRESS</label>
+                  <input type="email" placeholder="your@email.com" className="contact-input" />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <label className="font-cinzel" style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.15em', color: '#6b6b6b' }}>WEDDING DATE</label>
+                  <input type="date" className="contact-input" />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <label className="font-cinzel" style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.15em', color: '#6b6b6b' }}>MESSAGE</label>
+                  <textarea rows={5} placeholder="Tell us about your card requirements — design style, quantity, language, etc." className="contact-textarea" />
+                </div>
+                <button type="submit" className="contact-btn">Send Enquiry</button>
+                <p className="font-noto" style={{ fontSize: '0.75rem', color: '#6b6b6b', textAlign: 'center' }}>
+                  We typically respond within one business day.
+                </p>
+              </form>
             </div>
-            <div>
-              <label className="block font-noto text-xs mb-1" style={{color:'#800000'}}>Message</label>
-              <textarea rows={4} className="input-field" placeholder="Tell us about your card requirements — design style, quantity, language, etc." />
-            </div>
-            <button type="submit" className="btn-primary w-full justify-center">Send Enquiry</button>
-          </form>
+
+          </div>
         </div>
       </div>
     </MainLayout>

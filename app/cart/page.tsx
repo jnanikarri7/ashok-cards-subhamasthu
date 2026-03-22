@@ -38,9 +38,9 @@ export default function CartPage() {
                 </div>
                 <div className="flex-1">
                   <h3 className="font-playfair font-semibold text-sm" style={{color:'#800000'}}>{item.name}</h3>
-                  {item.customization && (item.customization as any).groomName && (
+                  {item.customization?.groomName && (
                     <p className="font-noto text-xs mt-1" style={{color:'#888'}}>
-                      {(item.customization as any).groomName} weds {(item.customization as any).brideName} • {(item.customization as any).quantity} cards
+                      {item.customization.groomName} weds {item.customization.brideName} • {item.quantity} cards
                     </p>
                   )}
                   <div className="flex items-center gap-3 mt-2">

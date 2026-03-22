@@ -4,14 +4,14 @@ import bcrypt from 'bcryptjs'
 const prisma = new PrismaClient()
 
 const CARD_IMAGES = {
-  temple: 'https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?w=800',
-  kalamkari: 'https://images.unsplash.com/photo-1582560475093-ba66accbc5a7?w=800',
-  leaf: 'https://images.unsplash.com/photo-1601979031925-424e53b6caaa?w=800',
-  gold: 'https://images.unsplash.com/photo-1519750157634-b6d493a0f77c?w=800',
-  gopuram: 'https://images.unsplash.com/photo-1544961371-516024f8e267?w=800',
-  modern: 'https://images.unsplash.com/photo-1521316730702-829a8e3a8b02?w=800',
-  laser: 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=800',
-  digital: 'https://images.unsplash.com/photo-1563291074-2bf8677ac0e5?w=800',
+  temple:    'https://placehold.co/800x600/800000/D4AF37?text=Temple+Theme',
+  kalamkari: 'https://placehold.co/800x600/4a0000/D4AF37?text=Kalamkari',
+  leaf:      'https://placehold.co/800x600/2d5a27/D4AF37?text=Leaf+Style',
+  gold:      'https://placehold.co/800x600/5c4000/D4AF37?text=Gold+Foil',
+  gopuram:   'https://placehold.co/800x600/800000/EFE6D2?text=Gopuram',
+  modern:    'https://placehold.co/800x600/1a1a2e/D4AF37?text=Modern',
+  laser:     'https://placehold.co/800x600/2c2c2c/D4AF37?text=Laser+Cut',
+  digital:   'https://placehold.co/800x600/0a3d62/D4AF37?text=Digital+Invite',
 }
 
 async function main() {
